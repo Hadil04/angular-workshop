@@ -1,0 +1,27 @@
+<h2>Liste des suggestions</h2>
+
+<input
+  type="text"
+  placeholder="Rechercher par titre ou catégorie"
+  [(ngModel)]="searchText"
+/>
+
+
+
+<div *ngFor="let s of suggestions">
+  <h3>{{ s.title }}</h3>
+
+  <p>{{ s.description }}</p>
+  <p><strong>Catégorie :</strong> {{ s.category }}</p>
+  <p><strong>Date :</strong> {{ s.date | date:'dd/MM/yyyy' }}</p>
+  <p><strong>Likes :</strong> {{ s.nbLikes }}</p>
+  <p><strong>Status :</strong> {{ s.status }}</p>
+
+  <!-- 👇 LES BOUTONS SONT ICI -->
+  <div *ngIf="s.status !== 'refusee'">
+    <button (click)="likeSuggestion(s)">Like</button>
+    <button (click)="addToFavorites(s)">Ajouter aux favoris</button>
+  </div>
+
+  <hr>
+</div>
