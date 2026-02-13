@@ -59,4 +59,10 @@ export class ListSuggestionComponent {
 
   searchText: string = '';
 
+  get filteredSuggestions(): Suggestion[] {
+    return this.suggestions.filter(s =>
+      s.title.toLowerCase().includes(this.searchText.toLowerCase()) ||
+      s.category.toLowerCase().includes(this.searchText.toLowerCase())
+    );
+    }
 }
