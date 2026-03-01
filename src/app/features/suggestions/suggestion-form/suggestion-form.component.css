@@ -1,0 +1,32 @@
+/* Styles pour SuggestionFormComponent */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+.form-control, .form-select {
+  border-radius: 4px;
+}
+
+.form-control:read-only {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+button.btn-primary {
+  padding: 10px 30px;
+}
+
+button.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

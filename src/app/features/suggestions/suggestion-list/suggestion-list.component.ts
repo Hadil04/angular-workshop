@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-suggestion-list',
   templateUrl: './suggestion-list.component.html',
   styleUrls: ['./suggestion-list.component.css']
 })
-export class SuggestionListComponent {
+export class SuggestionListComponent implements OnInit {
 
-  suggestions = [
+  suggestions: any[] = [
     {
       id: 1,
       title: 'Organiser une journée team building',
@@ -28,8 +28,8 @@ export class SuggestionListComponent {
     },
     {
       id: 3,
-      title: 'Moderniser l’interface utilisateur',
-      description: 'Refonte complète de l’interface utilisateur.',
+      title: "Moderniser l'interface utilisateur",
+      description: "Refonte complète de l'interface utilisateur.",
       category: 'Technologie',
       nbLikes: 5,
       status: 'EN_ATTENTE',
@@ -37,7 +37,18 @@ export class SuggestionListComponent {
     }
   ];
 
-  // ✅ AJOUTER CETTE MÉTHODE
+  ngOnInit(): void {
+    // Charger les suggestions depuis localStorage
+    const storedSuggestions = localStorage.getItem('suggestions');
+    if (storedSuggestions) {
+      const newSuggestions = JSON.parse(storedSuggestions);
+      // Ajouter les nouvelles suggestions à la liste existante
+      this.suggestions = [...this.suggestions, ...newSuggestions];
+      // Effacer le localStorage après l'avoir chargé
+      localStorage.removeItem('suggestions');
+    }
+  }
+
   likeSuggestion(s: any) {
     s.nbLikes++;
   }

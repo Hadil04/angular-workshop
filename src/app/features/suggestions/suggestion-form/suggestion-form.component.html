@@ -1,0 +1,89 @@
+<div class="container mt-4">
+  <h2>Ajouter une suggestion</h2>
+  
+  <form [formGroup]="suggestionForm" (ngSubmit)="onSubmit()">
+    
+    <!-- Titre -->
+    <div class="mb-3">
+      <label for="title" class="form-label">Titre</label>
+      <input 
+        type="text" 
+        id="title" 
+        class="form-control" 
+        formControlName="title"
+        placeholder="Titre (minimum 5 caractères, commence par une majuscule)"
+      >
+      <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="text-danger mt-1">
+        <small *ngIf="title?.errors?.['required']">Le titre est obligatoire.</small>
+        <small *ngIf="title?.errors?.['minlength']">Le titre doit contenir au minimum 5 caractères.</small>
+        <small *ngIf="title?.errors?.['pattern']">Le titre doit commencer par une majuscule et ne contenir que des lettres.</small>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea 
+        id="description" 
+        class="form-control" 
+        formControlName="description"
+        rows="4"
+        placeholder="Description (minimum 30 caractères)"
+      ></textarea>
+      <div *ngIf="description?.invalid && (description?.dirty || description?.touched)" class="text-danger mt-1">
+        <small *ngIf="description?.errors?.['required']">La description est obligatoire.</small>
+        <small *ngIf="description?.errors?.['minlength']">La description doit contenir au minimum 30 caractères.</small>
+      </div>
+    </div>
+
+    <!-- Catégorie -->
+    <div class="mb-3">
+      <label for="category" class="form-label">Catégorie</label>
+      <select 
+        id="category" 
+        class="form-select" 
+        formControlName="category"
+      >
+        <option value="" disabled>-- Sélectionnez une catégorie --</option>
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
+      <div *ngIf="category?.invalid && (category?.dirty || category?.touched)" class="text-danger mt-1">
+        <small *ngIf="category?.errors?.['required']">La catégorie est obligatoire.</small>
+      </div>
+    </div>
+
+    <!-- Date -->
+    <div class="mb-3">
+      <label for="date" class="form-label">Date</label>
+      <input 
+        type="text" 
+        id="date" 
+        class="form-control" 
+        formControlName="date"
+        readonly
+      >
+    </div>
+
+    <!-- Status -->
+    <div class="mb-3">
+      <label for="status" class="form-label">Status</label>
+      <input 
+        type="text" 
+        id="status" 
+        class="form-control" 
+        formControlName="status"
+        readonly
+      >
+    </div>
+
+    <!-- Bouton Soumettre -->
+    <button 
+      type="submit" 
+      class="btn btn-primary" 
+      [disabled]="suggestionForm.invalid"
+    >
+      Soumettre
+    </button>
+    
+  </form>
+</div>
