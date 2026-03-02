@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { SuggestionService } from '../../../core/services/suggestion.service';
+import { Suggestion } from '../../../models/suggestion';
 
 @Component({
   selector: 'app-suggestion-list',
@@ -6,51 +9,50 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./suggestion-list.component.css']
 })
 export class SuggestionListComponent implements OnInit {
+  suggestions: Suggestion[] = [];
 
-  suggestions: any[] = [
-    {
-      id: 1,
-      title: 'Organiser une journée team building',
-      description: 'Suggestion pour renforcer les liens entre les membres.',
-      category: 'Événements',
-      nbLikes: 10,
-      status: 'ACCEPTEE',
-      date: '20 Jan 2025'
-    },
-    {
-      id: 2,
-      title: 'Améliorer le système de réservation',
-      description: 'Proposition pour améliorer la gestion des réservations.',
-      category: 'Technologie',
-      nbLikes: 3,
-      status: 'REFUSEE',
-      date: '15 Jan 2025'
-    },
-    {
-      id: 3,
-      title: "Moderniser l'interface utilisateur",
-      description: "Refonte complète de l'interface utilisateur.",
-      category: 'Technologie',
-      nbLikes: 5,
-      status: 'EN_ATTENTE',
-      date: '10 Jan 2025'
-    }
-  ];
+  constructor(
+    private suggestionService: SuggestionService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    // Charger les suggestions depuis localStorage
-    const storedSuggestions = localStorage.getItem('suggestions');
-    if (storedSuggestions) {
-      const newSuggestions = JSON.parse(storedSuggestions);
-      // Ajouter les nouvelles suggestions à la liste existante
-      this.suggestions = [...this.suggestions, ...newSuggestions];
-      // Effacer le localStorage après l'avoir chargé
-      localStorage.removeItem('suggestions');
-    }
+    this.loadSuggestions();
   }
 
-  likeSuggestion(s: any) {
-    s.nbLikes++;
+  loadSuggestions(): void {
+    this.suggestionService.getSuggestionsList().subscribe({
+      next: (data) => {
+        this.suggestions = data;
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des suggestions', err);
+      }
+    });
   }
 
+  likeSuggestion(s: Suggestion): void {
+    this.suggestionService.updateNbLikes(s.id).subscribe({
+      next: (updatedSuggestion) => {
+        if (updatedSuggestion) {
+          s.nbLikes = updatedSuggestion.nbLikes;
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors du like', err);
+      }
+    });
+  }
+
+  deleteSuggestion(s: Suggestion): void {
+    this.suggestionService.deleteSuggestion(s.id).subscribe({
+      next: () => {
+        this.suggestions = this.suggestions.filter(suggestion => suggestion.id !== s.id);
+        this.router.navigate(['/suggestions']);
+      },
+      error: (err) => {
+        console.error('Erreur lors de la suppression', err);
+      }
+    });
+  }
 }

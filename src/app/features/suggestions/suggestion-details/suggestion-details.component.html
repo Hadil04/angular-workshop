@@ -4,7 +4,13 @@
   <h3>{{ suggestion.title }}</h3>
   <p>{{ suggestion.description }}</p>
   <p><strong>Catégorie :</strong> {{ suggestion.category }}</p>
+  <p><strong>Date :</strong> {{ suggestion.date }}</p>
+  <p><strong>Status :</strong> {{ suggestion.status }}</p>
   <p><strong>Likes :</strong> {{ suggestion.nbLikes }}</p>
+  
+  <button class="btn btn-primary" [routerLink]="['/suggestions/edit', suggestion.id]">
+    Modifier
+  </button>
 </div>
 
 <button routerLink="/suggestions">

@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h2>Ajouter une suggestion</h2>
+  <h2>{{ isEditMode ? 'Modifier la suggestion' : 'Ajouter une suggestion' }}</h2>
   
   <form [formGroup]="suggestionForm" (ngSubmit)="onSubmit()">
     
@@ -83,6 +83,15 @@
       [disabled]="suggestionForm.invalid"
     >
       Soumettre
+    </button>
+    
+    <!-- Bouton Annuler -->
+    <button 
+      type="button" 
+      class="btn btn-secondary ms-2" 
+      routerLink="/suggestions"
+    >
+      Annuler
     </button>
     
   </form>

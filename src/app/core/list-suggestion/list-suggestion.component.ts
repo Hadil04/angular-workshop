@@ -1,68 +1,78 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { SuggestionService } from '../services/suggestion.service';
 import { Suggestion } from '../../models/suggestion';
+import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-list-suggestion',
   templateUrl: './list-suggestion.component.html',
   styleUrls: ['./list-suggestion.component.css']
 })
-export class ListSuggestionComponent {
-
-  suggestions: Suggestion[] = [
-    {
-      id: 1,
-      title: 'Organiser une journée team building',
-      description: 'Suggestion pour organiser une journée de team building afin de renforcer les liens entre les membres de l’équipe.',
-      category: 'Événements',
-      date: new Date('2025-01-20'),
-      status: 'acceptee',
-      nbLikes: 10
-    },
-    {
-      id: 2,
-      title: 'Améliorer le système de réservation',
-      description: 'Proposition pour améliorer la gestion des réservations en ligne avec un système de confirmation automatique.',
-      category: 'Technologie',
-      date: new Date('2025-01-15'),
-      status: 'refusee',
-      nbLikes: 0
-    },
-    {
-      id: 3,
-      title: 'Créer un système de récompenses',
-      description: 'Mise en place d’un programme de récompenses pour motiver les employés et reconnaître leurs efforts.',
-      category: 'Ressources Humaines',
-      date: new Date('2025-01-25'),
-      status: 'refusee',
-      nbLikes: 0
-    },
-    {
-      id: 4,
-      title: 'Moderniser l’interface utilisateur',
-      description: 'Refonte complète de l’interface utilisateur pour une meilleure expérience utilisateur.',
-      category: 'Technologie',
-      date: new Date('2025-01-30'),
-      status: 'en_attente',
-      nbLikes: 0
-    }
-  ];
-
+export class ListSuggestionComponent implements OnInit {
+  suggestions: Suggestion[] = [];
+  searchText: string = '';
   favorites: Suggestion[] = [];
 
-  likeSuggestion(s: Suggestion): void {
-    s.nbLikes++;
+  constructor(
+    private suggestionService: SuggestionService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loadSuggestions();
   }
 
-  addToFavorites(s: Suggestion): void {
-    this.favorites.push(s);
+  loadSuggestions(): void {
+    this.suggestionService.getSuggestionsList().subscribe({
+      next: (data) => {
+        this.suggestions = data;
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des suggestions', err);
+      }
+    });
   }
-
-  searchText: string = '';
 
   get filteredSuggestions(): Suggestion[] {
-    return this.suggestions.filter(s =>
+    if (!this.searchText) {
+      return this.suggestions;
+    }
+    return this.suggestions.filter(s => 
       s.title.toLowerCase().includes(this.searchText.toLowerCase()) ||
       s.category.toLowerCase().includes(this.searchText.toLowerCase())
     );
+  }
+
+  likeSuggestion(s: Suggestion): void {
+    this.suggestionService.updateNbLikes(s.id).subscribe({
+      next: (updatedSuggestion) => {
+        if (updatedSuggestion) {
+          s.nbLikes = updatedSuggestion.nbLikes;
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors du like', err);
+      }
+    });
+  }
+
+  deleteSuggestion(s: Suggestion): void {
+    this.suggestionService.deleteSuggestion(s.id).subscribe({
+      next: () => {
+        this.suggestions = this.suggestions.filter(suggestion => suggestion.id !== s.id);
+        this.router.navigate(['/suggestions']);
+      },
+      error: (err) => {
+        console.error('Erreur lors de la suppression', err);
+      }
+    });
+  }
+
+  addToFavorites(s: Suggestion): void {
+    if (!this.favorites.find(f => f.id === s.id)) {
+      this.favorites.push(s);
+      alert('Suggestion ajoutée aux favoris!');
     }
+  }
 }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { SuggestionsRoutingModule } from './suggestions-routing.module';
 import { SuggestionsComponent } from './suggestions.component';
@@ -19,6 +20,7 @@ import { SuggestionFormComponent } from './suggestion-form/suggestion-form.compo
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
     SuggestionsRoutingModule
   ]
 })
